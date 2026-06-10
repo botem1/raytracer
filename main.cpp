@@ -1,32 +1,25 @@
 #include <iostream>
 #include <algorithm>
+#include <memory>
 
+#include "raytracer.h"
 #include "vec3.h"
 #include "color.h"
 #include "ray.h"
 #include "hittable.h"
 #include "sphere.h"
+#include "hittable_list.h"
 
-const double INF = 1e6;
-const double TMIN = 0.0;
-const double TMAX = INF;
-
-color ray_color(const ray& r){
-	sphere s(vec3(1, 0, -2), 0.7);
-
+color ray_color(const ray& r, const hittable_list& world){
 	hit_record rec;
-	if(s.hit(r, TMIN, TMAX, rec)){
-		// std::cerr << "N = " << normal << "\n";
-		vec3 shadeColor = (rec.normal + vec3(1, 1, 1)) / 2;
-		return shadeColor;
+	if(world.hit(r, 0.0, infinity, rec)){
+		return (rec.normal + vec3(1, 1, 1)) / 2;
 	}
 
 	vec3 unitDirection = unitVector(r.direction());
-
 	double p =  0.5 * (unitDirection.y() + 1);
-	color col = (1 - p) * color(1, 1, 1) + p * color(0.5, 0.7, 1);
 
-	return col;
+	return (1 - p) * color(1, 1, 1) + p * color(0.5, 0.7, 1);
 }
 
 int main(){
@@ -49,8 +42,11 @@ int main(){
 	double focalLength = 1.0;
 
 	point3 viewportUpperLeft = cameraCenter - point3(0, 0, focalLength) - cameraV / 2 - cameraU / 2;
-	std::cerr << "viewport = " << viewportUpperLeft << "\n";
 	point3 pixel00Location = viewportUpperLeft + 0.5 * (pixelDeltaU + pixelDeltaV);
+
+	hittable_list world;
+	world.add(make_shared<sphere>(vec3(0, 0, -3), 0.7));
+	// world.add(make_shared<sphere>(vec3(0, -20, -40), 20));
 
 	std::cout << "P3\n";
 	std::cout << imageWidth << " " << imageHeight << "\n";
@@ -64,7 +60,7 @@ int main(){
 			// std::cerr << "ray dir = " << rayDirection << "\n";
 			ray r(pixelCenter, rayDirection);
 
-			vec3 pixel_color = ray_color(r);
+			vec3 pixel_color = ray_color(r, world);
 			write_color(std::cout, pixel_color);
 			std::cout << "\n";
 		}
