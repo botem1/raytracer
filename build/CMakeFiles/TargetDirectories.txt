@@ -1,0 +1,4 @@
+/Users/bogdantemnik/stuff/code/raytracing/build/CMakeFiles/main.dir
+/Users/bogdantemnik/stuff/code/raytracing/build/CMakeFiles/test.dir
+/Users/bogdantemnik/stuff/code/raytracing/build/CMakeFiles/edit_cache.dir
+/Users/bogdantemnik/stuff/code/raytracing/build/CMakeFiles/rebuild_cache.dir
