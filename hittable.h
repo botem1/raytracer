@@ -9,7 +9,15 @@ public:
 	point3 p;
 	vec3 normal;
 	double t;
+	bool isFrontFace;
 
+	void setFaceNormal(const ray& r, const vec3& outwardNormal){
+		// NOTE: it is assumed that outwardNormal has a unit length.
+		isFrontFace = (dot(r.direction(), outwardNormal) < 0);
+
+		if(isFrontFace) normal = outwardNormal;
+		else normal = -outwardNormal;
+	}
 };
 
 class hittable{

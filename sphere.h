@@ -20,17 +20,14 @@ public:
 		double b = -2 * dot(r.direction(), center - r.origin());
 		double c = dot(center - r.origin(), center - r.origin()) - radius * radius;
 
-		// d = 1/4 * D
 		double d = h * h - a * c;
 		double D = b * b - 4 * a * c;
 
 		if(D < 0.0) return false;
 
 		double t = (-b - sqrt(d)) / a / 2;
-		std::cerr << "t1 = " << t << "\n";
 		if(t <= tMin || t >= tMax){
 			t = (-b + sqrt(d)) / a / 2;
-			std::cerr << "t2 = " << t << "\n";
 			if(t <= tMin || t >= tMax){
 				return false;
 			}
@@ -39,13 +36,9 @@ public:
 
 		rec.t = t;
 		rec.p = r.at(t);
-		rec.normal = unitVector(rec.p - center);
-		// std::cerr << "rec.p = " << rec.p << "\n";
-		// std::cerr << "rec.p - center = " << rec.p - center << "\n";
-		// std::cerr << "(rec.p - center).length() = " << (rec.p - center).length() << "\n";
-		// std::cerr << "unitVector: " << unitVector(rec.p - center) << "\n";
-		// std::cerr << "/radius: " << (rec.p - center) / radius << "\n";
-
+		
+		vec3 outwardNormal = unitVector((rec.p - center));
+		rec.setFaceNormal(r, outwardNormal);
 		return true;
 	}
 };
