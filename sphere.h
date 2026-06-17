@@ -17,26 +17,24 @@ public:
 	bool hit(const ray& r, const interval rayT, hit_record& rec) const override {
 		double a = dot(r.direction(), r.direction());
 		double h = dot(r.direction(), center - r.origin());
-		double b = -2 * dot(r.direction(), center - r.origin());
 		double c = dot(center - r.origin(), center - r.origin()) - radius * radius;
 
 		double d = h * h - a * c;
-		double D = b * b - 4 * a * c;
 
-		if(D < 0.0) return false;
+		if(d < 0.0) return false;
 
-		double t = (-b - sqrt(d)) / a / 2;
-		if(!rayT.surrounds(t)){
-			t = (-b + sqrt(d)) / a / 2;
-			if(!rayT.surrounds(t)) return false;
+		double root = (h - sqrt(d)) / a;
+		if(!rayT.surrounds(root)){
+			root = (h + sqrt(d)) / a;
+			if(!rayT.surrounds(root)) return false;
 		}
 
-		rec.t = t;
-		rec.p = r.at(t);
+		rec.t = root;
+		rec.p = r.at(root);
 		
 		vec3 outwardNormal = unitVector((rec.p - center));
 		rec.setFaceNormal(r, outwardNormal);
-		
+
 		return true;
 	}
 };
