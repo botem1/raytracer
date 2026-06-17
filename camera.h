@@ -11,14 +11,13 @@
 
 class camera{
 private:
-	int maxColorVal;
 	double aspectRatio;
 	int imageWidth;
 	int imageHeight;
 	double viewportWidth;
 	double focalLength;
 
-	point3 cameraCenter;
+	point3 center;
 	point3 pixel00Location;
 	vec3 pixelDeltaV;
 	vec3 pixelDeltaU;
@@ -39,7 +38,6 @@ private:
 
 public:
 	void initialize(){
-		maxColorVal = 256;
 		aspectRatio = 16.0 / 9.0;
 
 		imageWidth = 1000;
@@ -54,9 +52,9 @@ public:
 		pixelDeltaV = cameraV / imageHeight;
 		pixelDeltaU = cameraU / imageWidth;
 
-		cameraCenter = point3(0, 0, 0);
+		center = point3(0, 0, 0);
 
-		point3 viewportUpperLeft = cameraCenter - point3(0, 0, focalLength) - cameraV / 2 - cameraU / 2;
+		point3 viewportUpperLeft = center - point3(0, 0, focalLength) - cameraV / 2 - cameraU / 2;
 		pixel00Location = viewportUpperLeft + 0.5 * (pixelDeltaU + pixelDeltaV);
 	}
 
