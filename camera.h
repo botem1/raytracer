@@ -37,10 +37,10 @@ private:
 	}
 
 public:
-	void initialize(){
-		aspectRatio = 16.0 / 9.0;
 
-		imageWidth = 1000;
+	camera(int _imageWidth, double _aspectRatio)
+	: imageWidth{_imageWidth}, aspectRatio{_aspectRatio}
+	{
 		imageHeight = std::max(1, int(imageWidth / aspectRatio));
 
 		double focalLength = 1.0;
@@ -59,8 +59,6 @@ public:
 	}
 
 	void render(const hittable_list& world){
-		initialize();
-
 		std::cout << "P3\n";
 		std::cout << imageWidth << " " << imageHeight << "\n";
 		std::cout << 256 << "\n";
@@ -69,7 +67,7 @@ public:
 			for(int j = 0;j < imageWidth;++j){
 
 				point3 pixelCenter = pixel00Location + (i * pixelDeltaV) + (j * pixelDeltaU);
-				vec3 rayDirection = pixelCenter - cameraCenter;
+				vec3 rayDirection = pixelCenter - center;
 
 				ray r(pixelCenter, rayDirection);
 
