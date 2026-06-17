@@ -26,12 +26,9 @@ public:
 		if(D < 0.0) return false;
 
 		double t = (-b - sqrt(d)) / a / 2;
-		if(t <= rayT.min || t >= rayT.max){
+		if(!rayT.surrounds(t)){
 			t = (-b + sqrt(d)) / a / 2;
-			if(t <= rayT.min || t >= rayT.max){
-				return false;
-			}
-			return false;
+			if(!rayT.surrounds(t)) return false;
 		}
 
 		rec.t = t;
@@ -39,6 +36,7 @@ public:
 		
 		vec3 outwardNormal = unitVector((rec.p - center));
 		rec.setFaceNormal(r, outwardNormal);
+		
 		return true;
 	}
 };
