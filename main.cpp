@@ -9,10 +9,11 @@
 #include "hittable.h"
 #include "sphere.h"
 #include "hittable_list.h"
+#include "interval.h"
 
 color ray_color(const ray& r, const hittable_list& world){
 	hit_record rec;
-	if(world.hit(r, 0.0, infinity, rec)){
+	if(world.hit(r, interval::universe, rec)){
 		return (rec.normal + vec3(1, 1, 1)) / 2;
 	}
 

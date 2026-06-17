@@ -14,7 +14,7 @@ public:
 	: center{_center}, radius{std::fmax(0, _radius)}
 	{}
 
-	bool hit(const ray& r, double tMin, double tMax, hit_record& rec) const override {
+	bool hit(const ray& r, const interval rayT, hit_record& rec) const override {
 		double a = dot(r.direction(), r.direction());
 		double h = dot(r.direction(), center - r.origin());
 		double b = -2 * dot(r.direction(), center - r.origin());
@@ -26,9 +26,9 @@ public:
 		if(D < 0.0) return false;
 
 		double t = (-b - sqrt(d)) / a / 2;
-		if(t <= tMin || t >= tMax){
+		if(t <= rayT.min || t >= rayT.max){
 			t = (-b + sqrt(d)) / a / 2;
-			if(t <= tMin || t >= tMax){
+			if(t <= rayT.min || t >= rayT.max){
 				return false;
 			}
 			return false;

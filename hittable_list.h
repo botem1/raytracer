@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "hittable.h"
+#include "interval.h"
 
 using std::shared_ptr;
 using std::make_shared;
@@ -19,12 +20,12 @@ public:
 
 	void add(shared_ptr<hittable> object){ objects.push_back(object); }
 
-	bool hit(const ray& r, double tMin, double tMax, hit_record& rec) const override {
+	bool hit(const ray& r, const interval rayT, hit_record& rec) const override {
 		bool isHit = false;
-		double currSmallestT = tMax;
+		double currSmallestT = rayT.max;
 		hit_record tempRec;
 		for(auto object: objects){
-			if(object->hit(r, tMin, currSmallestT, tempRec)){
+			if(object->hit(r, interval(rayT.min, currSmallestT), tempRec)){
 				isHit = true;
 				rec = tempRec;
 				currSmallestT = rec.t;
