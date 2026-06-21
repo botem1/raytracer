@@ -23,6 +23,12 @@ public:
 	bool contains(double t) const { return min < t && t < max; }
 
 	double size() { return max - min; }
+
+	double clamp(double x){
+		if(x < min) return min;
+		if(x > max) return max;
+		return x;
+	}
 };
 
 const interval interval::universe = interval(-infinity, infinity);
