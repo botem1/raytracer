@@ -2,7 +2,9 @@
 #define COLOR_H
 
 #include <iostream>
+
 #include "vec3.h"
+#include "interval.h"
 
 using color = vec3;
 
@@ -13,10 +15,10 @@ void write_color(std::ostream& out, const color& pixelColor){
 	double g = pixelColor.y();
 	double b = pixelColor.z();
 
-	int ir = int(256.0 * r);
-	int ig = int(256.0 * g);
-	int ib = int(256.0 * b);
-
+	interval intensity(0.0, 1.0);
+	int ir = int(256.0 * intensity.clamp(r));
+	int ig = int(256.0 * intensity.clamp(g));
+	int ib = int(256.0 * intensity.clamp(b));
 	out << ir << ' ' << ig << ' ' << ib;
 }
 
