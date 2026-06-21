@@ -12,6 +12,7 @@
 class camera{
 private:
 	double aspectRatio;
+	int samplesPerPixel;
 	int imageWidth;
 	int imageHeight;
 	double viewportWidth;
@@ -36,10 +37,20 @@ private:
 		return (1 - p) * color(1, 1, 1) + p * color(0.5, 0.7, 1);
 	}
 
+	vec3 sample_offset() const {
+		return vec3(
+			random_double(0.0, 0.5),
+			random_double(0.0, 0.5),
+			0
+		) - vec3(0.5, 0.5, 0);
+	}
+
 public:
 
-	camera(int _imageWidth, double _aspectRatio)
-	: imageWidth{_imageWidth}, aspectRatio{_aspectRatio}
+	camera(int _imageWidth, double _aspectRatio, int _samplesPerPixel)
+	:	imageWidth{_imageWidth},
+		aspectRatio{_aspectRatio},
+		samplesPerPixel{_samplesPerPixel}
 	{
 		imageHeight = std::max(1, int(imageWidth / aspectRatio));
 
@@ -65,17 +76,29 @@ public:
 
 		for(int i = 0;i < imageHeight;++i){
 			for(int j = 0;j < imageWidth;++j){
+				vec3 pixel_color(0, 0, 0);
+				for(int sample = 0;sample < samplesPerPixel;++sample){
+					ray sampleRay = get_ray(i, j);
+					pixel_color += ray_color(sampleRay, world);
+				}
 
-				point3 pixelCenter = pixel00Location + (i * pixelDeltaV) + (j * pixelDeltaU);
-				vec3 rayDirection = pixelCenter - center;
-
-				ray r(pixelCenter, rayDirection);
-
-				vec3 pixel_color = ray_color(r, world);
+				pixel_color /= (double)samplesPerPixel;
 				write_color(std::cout, pixel_color);
 				std::cout << "\n";
 			}
 		}
+	}
+
+	ray get_ray(int i, int j) const {
+		vec3 offset = sample_offset();
+		vec3 pixelSample = pixel00Location
+							+ ((i + offset.x()) * pixelDeltaV)
+							+ ((j + offset.y()) * pixelDeltaU);
+
+		point3 rayOrigin = center;
+		vec3 rayDirection = pixelSample - center;
+
+		return ray(rayOrigin, rayDirection);
 	}
 };
 
